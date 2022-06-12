@@ -27,7 +27,7 @@ public class GameTest {
         return gliderField;
     }
 
-    private boolean validate(CellState[][] field) {
+    private boolean validateGlider(CellState[][] field) {
         int x = -1;
         int y = -1;
         for (int j = 0; j < field.length; j++) {
@@ -44,47 +44,43 @@ public class GameTest {
         }
         boolean check1 = false;
         boolean check2 = false;
+        boolean check3 = false;
+        boolean check4 = false;
 
         // Better check might be implemented but should be enough at this stage
-        if (y + 2 >= field.length || x + 2 >= field.length || x - 1 < 0) {
+        if (y + 2 >= field.length || x + 2 >= field.length || x - 2 < 0) {
             return true;
         }
-//        y + 1 < field.length && x + 1 < field.length
-//        y + 2 < field.length && x + 1 < field.length
-//        y + 2 < field.length
-//        y + 2 < field.length && x - 1 >= 0
 
-//        x + 2 < field.length
-//        y + 1 < field.length && x + 1 < field.length
-//        y + 1 < field.length && x + 2 < field.length
-//        y + 2 < field.length && x + 1 < field.length
-
-        if (field[y + 1][x + 1] != CellState.ALIVE) {
-            check1 = true;
-        }
-        if (field[y + 2][x + 1] != CellState.ALIVE) {
-            check1 = true;
-        }
-        if (field[y + 2][x] != CellState.ALIVE) {
-            check1 = true;
-        }
-        if (field[y + 2][x - 1] != CellState.ALIVE) {
+        if (field[y + 1][x + 1] == CellState.ALIVE
+                && field[y + 2][x - 1] == CellState.ALIVE
+                && field[y + 2][x] == CellState.ALIVE
+                && field[y + 2][x + 1] == CellState.ALIVE) {
             check1 = true;
         }
 
-        if (field[y][x + 2] != CellState.ALIVE) {
+        if (field[y][x + 2] == CellState.ALIVE
+                && field[y + 1][x + 1] == CellState.ALIVE
+                && field[y + 1][x + 2] == CellState.ALIVE
+                && field[y + 2][x + 1] == CellState.ALIVE) {
             check2 = true;
         }
-        if (field[y + 1][x + 1] != CellState.ALIVE) {
-            check2 = true;
+
+        if (field[y + 1][x - 2] == CellState.ALIVE
+                && field[y + 1][x] == CellState.ALIVE
+                && field[y + 2][x - 1] == CellState.ALIVE
+                && field[y + 2][x] == CellState.ALIVE) {
+            check3 = true;
         }
-        if (field[y + 1][x + 2] != CellState.ALIVE) {
-            check2 = true;
+
+        if (field[y + 1][x + 1] == CellState.ALIVE
+                && field[y + 1][x + 2] == CellState.ALIVE
+                && field[y + 2][x] == CellState.ALIVE
+                && field[y + 2][x + 1] == CellState.ALIVE) {
+            check4 = true;
         }
-        if (field[y + 2][x + 1] != CellState.ALIVE) {
-            check2 = true;
-        }
-        return check1 || check2;
+
+        return check1 || check2 || check3 || check4;
     }
 
     @Test
@@ -103,7 +99,7 @@ public class GameTest {
                 .map(states::add)
                 .subscribe();
         for (CellState[][] state : states) {
-            Assertions.assertTrue(validate(state));
+            Assertions.assertTrue(validateGlider(state));
         }
     }
 
