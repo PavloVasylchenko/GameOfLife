@@ -1,11 +1,13 @@
 package me.vasylchenko.gameoflife;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class Game {
 
     /**
      * Generate next field based on current field
+     *
      * @param field current field
      * @return next field
      */
@@ -29,10 +31,12 @@ public class Game {
      */
     public Flux<CellState[][]> game(CellState[][] initialField) {
         validate(initialField);
-        return Flux.generate(() -> initialField, (state, sink) -> {
-            sink.next(state);
-            return iterate(state);
+        Flux<CellState[][]> generate = Flux.generate(() -> initialField, (state, sink) -> {
+            CellState[][] iterate = iterate(state);
+            sink.next(iterate);
+            return iterate;
         });
+        return Mono.just(initialField).concatWith(generate);
     }
 
     /**
